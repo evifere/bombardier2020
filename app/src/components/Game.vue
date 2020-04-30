@@ -17,7 +17,8 @@ export default {
 
   data() {
     return {
-      version
+      version,
+      count: 0
     };
   },
   mounted() {
@@ -33,6 +34,7 @@ export default {
       oImg.set("left", 10).set("top", 10);
       _self.$canvas.add(oImg);
       _self.$plane = oImg;
+      _self.animatePlane(0);
     });
   },
 
@@ -48,6 +50,25 @@ export default {
       }
 
       return baseUrl;
+    },
+
+    animatePlane() {
+      let canvas = this.$canvas;
+
+      this.$data.count++;
+      if (this.$plane.get("left") > 1000) {
+        if (this.$plane.get("top") > 500) {
+          console.log("*******return*******");
+          return false;
+        }
+
+        this.$data.count = 10;
+        this.$plane.set("top", this.$plane.get("top") + 50);
+      }
+
+      this.$plane.set("left", 10 + this.$data.count * 10);
+      canvas.renderAll();
+      setTimeout(this.animatePlane, 100);
     }
   }
 };
