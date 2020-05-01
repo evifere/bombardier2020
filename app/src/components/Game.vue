@@ -40,8 +40,17 @@ export default {
       _self.animatePlane();
     });
 
+    this.drawBuildings();
     //draw ground
-    this.$canvas.add(new fabric.Rect({ left: 0, top: 550, fill: '#615f5b', width: 1100, height: 200 }));
+    this.$canvas.add(
+      new fabric.Rect({
+        left: 0,
+        top: 550,
+        fill: "#615f5b",
+        width: 1100,
+        height: 200
+      })
+    );
 
     window.addEventListener("mouseup", this.onLaunchBomb);
   },
@@ -60,6 +69,19 @@ export default {
       return baseUrl;
     },
 
+    drawBuildings() {
+      for (let i = 0; i < 11; i++) {
+        let color = i % 2 === 0 ? "#005b5b" : "#005b00";
+        this['building_'+i]  = new fabric.Rect({
+          left: 0 + i * 100,
+          top: 200,
+          fill: color,
+          width: 100,
+          height: 350
+        });
+        this.$canvas.add(this['building_'+i]);
+      }
+    },
     animatePlane() {
       let canvas = this.$canvas;
 
@@ -98,7 +120,7 @@ export default {
         this.$data.bombLaunched = false;
         this.$data.countBomb = 0;
         canvas.remove(this.$bomb);
-        this.createExplosion(this.$bomb.get("left"),500);
+        this.createExplosion(this.$bomb.get("left"), 500);
         return false;
       }
 
