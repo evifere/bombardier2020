@@ -78,7 +78,7 @@ export default {
     createBomb(left, top) {
       let _self = this;
 
-    fabric.Image.fromURL(this.getBaseUrl() + "bomb-40.png", function(oImg) {
+      fabric.Image.fromURL(this.getBaseUrl() + "bomb-40.png", function(oImg) {
         oImg.set("left", left).set("top", top);
         _self.$canvas.add(oImg);
         _self.$bomb = oImg;
@@ -93,6 +93,8 @@ export default {
       if (this.$bomb.get("top") > 500) {
         this.$data.bombLaunched = false;
         this.$data.countBomb = 0;
+        canvas.remove(this.$bomb);
+        this.createExplosion(this.$bomb.get("left"),500);
         return false;
       }
 
@@ -106,6 +108,27 @@ export default {
       }
       this.$data.bombLaunched = true;
       this.createBomb(this.$plane.get("left"), this.$plane.get("top") + 10);
+    },
+
+    createExplosion(left, top) {
+      let _self = this;
+
+      fabric.Image.fromURL(this.getBaseUrl() + "explosion-64.png", function(
+        oImg
+      ) {
+        oImg.set("left", left).set("top", top);
+        _self.$canvas.add(oImg);
+        _self.$explosion = oImg;
+        _self.animateExplosion();
+      });
+    },
+
+    animateExplosion() {
+      setTimeout(this.removeExplosion, 500);
+    },
+
+    removeExplosion() {
+      this.$canvas.remove(this.$explosion);
     }
   }
 };
