@@ -32,12 +32,16 @@ export default {
       backgroundColor: "blue"
     });
 
+    //draw plane and start animate
     fabric.Image.fromURL(this.getBaseUrl() + "plane-96.png", function(oImg) {
       oImg.set("left", 10).set("top", 10);
       _self.$canvas.add(oImg);
       _self.$plane = oImg;
       _self.animatePlane();
     });
+
+    //draw ground
+    this.$canvas.add(new fabric.Rect({ left: 0, top: 550, fill: '#615f5b', width: 1100, height: 200 }));
 
     window.addEventListener("mouseup", this.onLaunchBomb);
   },
