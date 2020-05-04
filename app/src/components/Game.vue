@@ -83,7 +83,7 @@ export default {
       }
     },
 
-    hasImpactWithBuilding() {
+    hasPlaneImpactWithBuilding() {
       let currentBuilding = this["building_" + this.$data.count];
 
       return this.$plane.get("top") + 50 > currentBuilding.get("top");
@@ -91,7 +91,7 @@ export default {
     animatePlane() {
       let canvas = this.$canvas;
 
-      if (this.$data.count < 11 && this.hasImpactWithBuilding()) {
+      if (this.$data.count < 11 && this.hasPlaneImpactWithBuilding()) {
         console.log("*******impact*******", this.$data.count);
         return false;
       }
@@ -124,15 +124,29 @@ export default {
       });
     },
 
+    hasBombImpactWithBuilding() {
+      let currentBuilding = this["building_" + this.$data.countBomb];
+
+      return this.$bomb.get("top") + 50 > currentBuilding.get("top");
+    },
+
+    endAnimateBomb() {
+      this.$data.bombLaunched = false;
+      this.$data.countBomb = 0;
+      this.$canvas.remove(this.$bomb);
+      this.createExplosion(this.$bomb.get("left"), this.$bomb.get("top"));
+    },
     animateBomb() {
       let canvas = this.$canvas;
 
       this.$data.countBomb++;
+      if (this.hasBombImpactWithBuilding()) {
+        this.endAnimateBomb();
+        return false;
+      }
+
       if (this.$bomb.get("top") > 500) {
-        this.$data.bombLaunched = false;
-        this.$data.countBomb = 0;
-        canvas.remove(this.$bomb);
-        this.createExplosion(this.$bomb.get("left"), 500);
+        this.endAnimateBomb();
         return false;
       }
 
@@ -145,7 +159,10 @@ export default {
         return false;
       }
       this.$data.bombLaunched = true;
-      this.createBomb(this.$plane.get("left"), this.$plane.get("top") + 10);
+      this.createBomb(
+        this.$plane.get("left") + 25,
+        this.$plane.get("top") + 10
+      );
     },
 
     createExplosion(left, top) {
