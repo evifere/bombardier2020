@@ -12,6 +12,7 @@ Vue.use(VueRouter);
 // These can be imported from other files
 
 const Game = () => import(/* webpackChunkName: "game" */ './components/Game.vue')
+const Home = () => import(/* webpackChunkName: "home" */ './components/Home.vue')
 
 
 // 2. Define some routes
@@ -20,6 +21,7 @@ const Game = () => import(/* webpackChunkName: "game" */ './components/Game.vue'
 // `Vue.extend()`, or just a component options object.
 // We'll talk about nested routes later.
 const routes = [
+  { path: '/', component: Home, name: 'home' },
   { path: '/game', component: Game, name: 'game' }
 ]
 
