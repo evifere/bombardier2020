@@ -201,7 +201,7 @@ export default {
       }
       this.$data.bombLaunched = true;
       this.createBomb(
-        this.$plane.get("left") + 25,
+        this.$plane.get("left") /*+ 25*/,
         this.$plane.get("top") + 10,
         this.$data.count
       );
