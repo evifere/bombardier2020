@@ -113,13 +113,14 @@ export default {
       setTimeout(this.animatePlane, 100);
     },
 
-    createBomb(left, top) {
+    createBomb(left, top,buildingIndex) {
       let _self = this;
 
       fabric.Image.fromURL(this.getBaseUrl() + "bomb-40.png", function(oImg) {
         oImg.set("left", left).set("top", top);
         _self.$canvas.add(oImg);
         _self.$bomb = oImg;
+        _self.$bomb.buildingIndex = buildingIndex;
         _self.animateBomb(0);
       });
     },
@@ -136,12 +137,27 @@ export default {
       this.$canvas.remove(this.$bomb);
       this.createExplosion(this.$bomb.get("left"), this.$bomb.get("top"));
     },
+    breakBuilding(){
+      let currentBuilding = this["building_" + this.$data.countBomb];
+      let currentTop = currentBuilding.get('top');
+
+      if(currentTop + 100 > 500){
+        currentTop = 500;
+      }
+      else{
+        currentTop += 100; 
+      }
+
+      currentBuilding.set('top',currentTop);
+    },
     animateBomb() {
       let canvas = this.$canvas;
 
       this.$data.countBomb++;
       if (this.hasBombImpactWithBuilding()) {
+        this.breakBuilding();
         this.endAnimateBomb();
+        console.log('$bomb.buildingIndex',this.$bomb.buildingIndex,'vs ', this.$data.countBomb)
         return false;
       }
 
@@ -161,7 +177,8 @@ export default {
       this.$data.bombLaunched = true;
       this.createBomb(
         this.$plane.get("left") + 25,
-        this.$plane.get("top") + 10
+        this.$plane.get("top") + 10,
+        this.$data.count
       );
     },
 
