@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <el-header>game score</el-header>
+    <el-header>game score {{count}} {{countBomb}}</el-header>
     <el-main>
       <canvas id="screen" tabindex="0"></canvas>
     </el-main>
@@ -72,27 +72,39 @@ export default {
     drawBuildings() {
       for (let i = 0; i < 11; i++) {
         let color = i % 2 === 0 ? "#005b5b" : "#005b00";
-        this['building_'+i]  = new fabric.Rect({
+        this["building_" + i] = new fabric.Rect({
           left: 0 + i * 100,
           top: 200,
           fill: color,
           width: 100,
           height: 350
         });
-        this.$canvas.add(this['building_'+i]);
+        this.$canvas.add(this["building_" + i]);
       }
+    },
+
+    hasImpactWithBuilding() {
+      let currentBuilding = this["building_" + this.$data.count];
+
+      return this.$plane.get("top") + 50 > currentBuilding.get("top");
     },
     animatePlane() {
       let canvas = this.$canvas;
 
+      if (this.$data.count < 11 && this.hasImpactWithBuilding()) {
+        console.log("*******impact*******", this.$data.count);
+        return false;
+      }
+
       this.$data.count++;
+
       if (this.$plane.get("left") > 1000) {
         if (this.$plane.get("top") > 500) {
           console.log("*******return*******");
           return false;
         }
 
-        this.$data.count = 10;
+        this.$data.count = 0;
         this.$plane.set("top", this.$plane.get("top") + 50);
       }
 
