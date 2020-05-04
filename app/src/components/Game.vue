@@ -113,6 +113,8 @@ export default {
         this.hasPlaneImpactWithBuilding()
       ) {
         console.log("*******impact*******", this.$data.count);
+        localStorage.setItem('score',this.$data.score);
+        this.$router.push('gameover');
         return false;
       }
 

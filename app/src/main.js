@@ -13,6 +13,7 @@ Vue.use(VueRouter);
 
 const Game = () => import(/* webpackChunkName: "game" */ './components/Game.vue')
 const Home = () => import(/* webpackChunkName: "home" */ './components/Home.vue')
+const GameOver = () => import(/* webpackChunkName: "gameover" */ './components/GameOver.vue')
 
 
 // 2. Define some routes
@@ -22,7 +23,8 @@ const Home = () => import(/* webpackChunkName: "home" */ './components/Home.vue'
 // We'll talk about nested routes later.
 const routes = [
   { path: '/', component: Home, name: 'home' },
-  { path: '/game', component: Game, name: 'game' }
+  { path: '/game', component: Game, name: 'game' },
+  { path: '/gameover', component: GameOver, name: 'gameover' }
 ]
 
 // 3. Create the router instance and pass the `routes` option
