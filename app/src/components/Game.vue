@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <el-header>game score {{count}} {{countBomb}}</el-header>
+    <el-header>game score :&nbsp;{{score}}</el-header>
     <el-main>
       <canvas id="screen" tabindex="0"></canvas>
     </el-main>
@@ -20,6 +20,7 @@ export default {
   data() {
     return {
       version,
+      score:0,
       count: 0,
       countBomb: 0,
       bombLaunched: false
@@ -92,6 +93,7 @@ export default {
           width: 100,
           height: 350
         });
+        this["building_" + i].isDestroyed = false;
         this.$canvas.add(this["building_" + i]);
       }
     },
@@ -158,12 +160,18 @@ export default {
       let currentBuilding = this["building_" + this.$bomb.buildingIndex];
       let currentTop = currentBuilding.get("top");
 
+      if(currentBuilding.isDestroyed === true){
+        return true;
+      }
+
       if (currentTop + 100 > FLOOR_TOP) {
         currentTop = FLOOR_TOP;
+        currentBuilding.isDestroyed = true;
       } else {
         currentTop += 100;
       }
 
+      this.$data.score += 50;
       currentBuilding.set("top", currentTop);
     },
     animateBomb() {
@@ -222,7 +230,7 @@ export default {
 </script>
 
 <style scoped>
-.el-main {
+/*.el-main {
   margin-left: 20%;
-}
+}*/
 </style>
