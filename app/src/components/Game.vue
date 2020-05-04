@@ -12,6 +12,8 @@
 import { fabric } from "fabric";
 import { version } from "../../package.json";
 
+const FLOOR_TOP = 550;
+
 export default {
   name: "Game",
 
@@ -41,6 +43,8 @@ export default {
     });
 
     this.drawBuildings();
+
+    this.$canvas.add(this.makeLine([0, FLOOR_TOP, 1000, FLOOR_TOP]));
     //draw ground
     this.$canvas.add(
       new fabric.Rect({
@@ -56,6 +60,15 @@ export default {
   },
 
   methods: {
+    makeLine(coords) {
+      return new fabric.Line(coords, {
+        fill: "red",
+        stroke: "red",
+        strokeWidth: 1,
+        selectable: false,
+        evented: false
+      });
+    },
     getBaseUrl() {
       let baseUrl =
         process.env.NODE_ENV === "production"
@@ -84,14 +97,19 @@ export default {
     },
 
     hasPlaneImpactWithBuilding() {
-      let currentBuilding = this["building_" + this.$data.count];
+      let currentBuilding = this[
+        "building_" + Math.floor(this.$data.count / 10)
+      ];
 
       return this.$plane.get("top") + 50 > currentBuilding.get("top");
     },
     animatePlane() {
       let canvas = this.$canvas;
 
-      if (this.$data.count < 11 && this.hasPlaneImpactWithBuilding()) {
+      if (
+        Math.floor(this.$data.count / 10) < 11 &&
+        this.hasPlaneImpactWithBuilding()
+      ) {
         console.log("*******impact*******", this.$data.count);
         return false;
       }
@@ -99,7 +117,7 @@ export default {
       this.$data.count++;
 
       if (this.$plane.get("left") > 1000) {
-        if (this.$plane.get("top") > 500) {
+        if (this.$plane.get("top") > FLOOR_TOP) {
           console.log("*******return*******");
           return false;
         }
@@ -113,14 +131,13 @@ export default {
       setTimeout(this.animatePlane, 100);
     },
 
-    createBomb(left, top,buildingIndex) {
+    createBomb(left, top, buildingIndex) {
       let _self = this;
-
       fabric.Image.fromURL(this.getBaseUrl() + "bomb-40.png", function(oImg) {
         oImg.set("left", left).set("top", top);
         _self.$canvas.add(oImg);
         _self.$bomb = oImg;
-        _self.$bomb.buildingIndex = buildingIndex;
+        _self.$bomb.buildingIndex = Math.floor(buildingIndex / 10);
         _self.animateBomb(0);
       });
     },
@@ -134,21 +151,20 @@ export default {
     endAnimateBomb() {
       this.$data.bombLaunched = false;
       this.$data.countBomb = 0;
-      this.$canvas.remove(this.$bomb);
       this.createExplosion(this.$bomb.get("left"), this.$bomb.get("top"));
+      this.$canvas.remove(this.$bomb);
     },
-    breakBuilding(){
-      let currentBuilding = this["building_" + this.$data.countBomb];
-      let currentTop = currentBuilding.get('top');
+    breakBuilding() {
+      let currentBuilding = this["building_" + this.$bomb.buildingIndex];
+      let currentTop = currentBuilding.get("top");
 
-      if(currentTop + 100 > 500){
-        currentTop = 500;
-      }
-      else{
-        currentTop += 100; 
+      if (currentTop + 100 > FLOOR_TOP) {
+        currentTop = FLOOR_TOP;
+      } else {
+        currentTop += 100;
       }
 
-      currentBuilding.set('top',currentTop);
+      currentBuilding.set("top", currentTop);
     },
     animateBomb() {
       let canvas = this.$canvas;
@@ -157,11 +173,10 @@ export default {
       if (this.hasBombImpactWithBuilding()) {
         this.breakBuilding();
         this.endAnimateBomb();
-        console.log('$bomb.buildingIndex',this.$bomb.buildingIndex,'vs ', this.$data.countBomb)
         return false;
       }
 
-      if (this.$bomb.get("top") > 500) {
+      if (this.$bomb.get("top") > FLOOR_TOP) {
         this.endAnimateBomb();
         return false;
       }
