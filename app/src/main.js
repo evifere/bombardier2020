@@ -14,6 +14,7 @@ Vue.use(VueRouter);
 const Game = () => import(/* webpackChunkName: "game" */ './components/Game.vue')
 const Home = () => import(/* webpackChunkName: "home" */ './components/Home.vue')
 const GameOver = () => import(/* webpackChunkName: "gameover" */ './components/GameOver.vue')
+const YouWin = () => import(/* webpackChunkName: "youwin" */ './components/YouWin.vue')
 
 
 // 2. Define some routes
@@ -24,7 +25,9 @@ const GameOver = () => import(/* webpackChunkName: "gameover" */ './components/G
 const routes = [
   { path: '/', component: Home, name: 'home' },
   { path: '/game', component: Game, name: 'game' },
-  { path: '/gameover', component: GameOver, name: 'gameover' }
+  { path: '/gameover', component: GameOver, name: 'gameover' },
+  { path: '/youwin', component: YouWin, name: 'youwin' },
+  
 ]
 
 // 3. Create the router instance and pass the `routes` option

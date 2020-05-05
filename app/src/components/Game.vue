@@ -12,7 +12,7 @@
 import { fabric } from "fabric";
 import { version } from "../../package.json";
 
-const FLOOR_TOP = 550;
+const FLOOR_TOP = 650;
 
 export default {
   name: "Game",
@@ -46,12 +46,14 @@ export default {
 
     this.drawBuildings();
 
-    this.$canvas.add(this.makeLine([0, FLOOR_TOP, 1000, FLOOR_TOP]));
+    this.$canvas.add(this.makeLine([0, FLOOR_TOP, 1100, FLOOR_TOP]));
+
+
     //draw ground
     this.$canvas.add(
       new fabric.Rect({
         left: 0,
-        top: 550,
+        top: FLOOR_TOP,
         fill: "#615f5b",
         width: 1100,
         height: 200
@@ -90,7 +92,7 @@ export default {
         this.makeCloud(10 + i * 100, 50);
         this.makeCloud(50 + i * 100, 100);
         this.makeCloud(10 + i * 100, 150);
-        this.makeCar(10 + i * 100, 550);
+        this.makeCar(10 + i * 100, FLOOR_TOP);
       }
     },
     getBaseUrl() {
@@ -118,9 +120,9 @@ export default {
           top: randomTop,
           fill: color,
           width: 100,
-          height: 350
+          height: 450
         });
-        this["building_" + i].isDestroyed = false;
+        this["building_" + i].isDestroyed = (randomTop >= FLOOR_TOP);
         this.$canvas.add(this["building_" + i]);
       }
     },
@@ -130,7 +132,10 @@ export default {
         "building_" + Math.floor(this.$data.count / 10)
       ];
 
-      return this.$plane.get("top") + 50 > currentBuilding.get("top");
+      return (
+        currentBuilding.isDestroyed === false &&
+        this.$plane.get("top") + 50 > currentBuilding.get("top")
+      );
     },
     animatePlane() {
       let canvas = this.$canvas;
@@ -139,7 +144,6 @@ export default {
         Math.floor(this.$data.count / 10) < 11 &&
         this.hasPlaneImpactWithBuilding()
       ) {
-        console.log("*******impact*******", this.$data.count);
         localStorage.setItem("score", this.$data.score);
         this.$router.push("gameover");
         return false;
@@ -149,7 +153,8 @@ export default {
 
       if (this.$plane.get("left") > 1000) {
         if (this.$plane.get("top") > FLOOR_TOP) {
-          console.log("*******return*******");
+          this.$router.push("youwin");
+
           return false;
         }
 
