@@ -106,12 +106,16 @@ export default {
       return baseUrl;
     },
 
+    getRandomInt(max) {
+      return Math.floor(Math.random() * Math.floor(max));
+    },
     drawBuildings() {
       for (let i = 0; i < 11; i++) {
         let color = i % 2 === 0 ? "#005b5b" : "#005b00";
+        let randomTop = 200 + this.getRandomInt(5) * 100;
         this["building_" + i] = new fabric.Rect({
           left: 0 + i * 100,
-          top: 200,
+          top: randomTop,
           fill: color,
           width: 100,
           height: 350
