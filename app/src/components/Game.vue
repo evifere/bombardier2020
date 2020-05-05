@@ -35,7 +35,7 @@ export default {
       backgroundColor: "blue"
     });
 
-    this.makeClouds();
+    this.makeCloudsAndCars();
     //draw plane and start animate
     fabric.Image.fromURL(this.getBaseUrl() + "plane-96.png", function(oImg) {
       oImg.set("left", 10).set("top", 10);
@@ -71,18 +71,26 @@ export default {
         evented: false
       });
     },
-    makeCloud(left, top) {
+    makeImage(left, top, image) {
       let _self = this;
-      fabric.Image.fromURL(this.getBaseUrl() + "nuages-30.png", function(oImg) {
+      fabric.Image.fromURL(this.getBaseUrl() + image, function(oImg) {
         oImg.set("left", left).set("top", top);
         _self.$canvas.add(oImg);
       });
     },
-    makeClouds() {
+    makeCloud(left, top) {
+      this.makeImage(left, top, "nuages-30.png");
+    },
+    makeCar(left, top) {
+      this.makeImage(left, top, "suv-40.png");
+    },
+
+    makeCloudsAndCars() {
       for (let i = 0; i < 11; i++) {
         this.makeCloud(10 + i * 100, 50);
         this.makeCloud(50 + i * 100, 100);
         this.makeCloud(10 + i * 100, 150);
+        this.makeCar(10 + i * 100, 550);
       }
     },
     getBaseUrl() {
