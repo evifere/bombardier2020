@@ -20,7 +20,7 @@ export default {
   data() {
     return {
       version,
-      score:0,
+      score: 0,
       count: 0,
       countBomb: 0,
       bombLaunched: false
@@ -35,6 +35,7 @@ export default {
       backgroundColor: "blue"
     });
 
+    this.makeClouds();
     //draw plane and start animate
     fabric.Image.fromURL(this.getBaseUrl() + "plane-96.png", function(oImg) {
       oImg.set("left", 10).set("top", 10);
@@ -69,6 +70,20 @@ export default {
         selectable: false,
         evented: false
       });
+    },
+    makeCloud(left, top) {
+      let _self = this;
+      fabric.Image.fromURL(this.getBaseUrl() + "nuages-30.png", function(oImg) {
+        oImg.set("left", left).set("top", top);
+        _self.$canvas.add(oImg);
+      });
+    },
+    makeClouds() {
+      for (let i = 0; i < 11; i++) {
+        this.makeCloud(10 + i * 100, 50);
+        this.makeCloud(50 + i * 100, 100);
+        this.makeCloud(10 + i * 100, 150);
+      }
     },
     getBaseUrl() {
       let baseUrl =
@@ -113,8 +128,8 @@ export default {
         this.hasPlaneImpactWithBuilding()
       ) {
         console.log("*******impact*******", this.$data.count);
-        localStorage.setItem('score',this.$data.score);
-        this.$router.push('gameover');
+        localStorage.setItem("score", this.$data.score);
+        this.$router.push("gameover");
         return false;
       }
 
@@ -162,7 +177,7 @@ export default {
       let currentBuilding = this["building_" + this.$bomb.buildingIndex];
       let currentTop = currentBuilding.get("top");
 
-      if(currentBuilding.isDestroyed === true){
+      if (currentBuilding.isDestroyed === true) {
         return true;
       }
 
